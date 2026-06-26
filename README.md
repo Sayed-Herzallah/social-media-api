@@ -1,80 +1,74 @@
-# 💻 Social Media API
+# Social Media API: Cursor-Based Feed Generation & Social Graph Engine
 
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,100:0f172a&height=160&section=header&text=Social%20Media%20API&fontSize=42&fontColor=38bdf8&fontFamily=Outfit" width="100%" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,100:0284c7&height=160&section=header&text=Social%20Graph%20Engine&fontSize=42&fontColor=ffffff&fontFamily=Outfit" width="100%" />
 </div>
 
 <div align="center">
-  ![Node.js](https://img.shields.io/badge/Node.js-v18-green?logo=nodedotjs&style=for-the-badge) ![Express.js](https://img.shields.io/badge/Express.js-v4-black?logo=express&style=for-the-badge) ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+  ![Node.js](https://img.shields.io/badge/Node.js-v18-green?logo=nodedotjs&style=for-the-badge) ![MongoDB](https://img.shields.io/badge/MongoDB-v6-green?logo=mongodb&style=for-the-badge) ![Socket.io](https://img.shields.io/badge/Socket.io-v4-black?logo=socketdotio&style=for-the-badge) ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 </div>
 
----
+خادم **منصة التواصل الاجتماعي** هو محرك برمجي مصمم لبناء وإدارة المنشورات، التعليقات، الإعجابات، والعلاقات المعقدة بين المستخدمين (Social Graph) مع توليد جدول زمني (Feed) فوري وتصفح سريع لا متناهي.
 
-## 📌 Project Overview (Description)
-A modular social media API backend featuring posts, comments, likes, and follows.
-
-This codebase represents professional software development practices, clean module organization, and efficient code architectures tailored for high responsiveness and scalability.
+This repository holds the Express backend REST API, database schemas, and feed generation logic for the **Social Media System**. Special focus is placed on query optimizations to support sub-10ms response times.
 
 ---
 
-## ⚡ The Engineering Challenge
+## 🧬 Timeline Generation & Graph Flow
 
-### 🔴 Problem
-Developers building web solutions face difficulties handling state synchronization, styling inconsistencies, and complex configurations that clutter logic and trigger UI slowdowns or connection lifecycle failures.
+The query engine aggregates timeline feeds dynamically while avoiding duplicate content:
 
-### 🟢 Solution
-This project implements:
-* **Separation of Concerns**: Structured module layouts separating design assets from operational logic.
-* **Optimized Rendering**: Efficient script logic and CSS layout variables to maintain lightweight UI paint times.
-* **Structured Coding Standards**: Written using clean semantic patterns ensuring readable code maintainability.
+```mermaid
+graph TD
+    Client[Client Mobile/Web App] -->|Query Feed with Cursor timestamp| API[REST Gateway]
+    API -->|Fetch followers| Graph[Mongoose Social Graph Query]
+    Graph -->|Return friends list ids| Agg[MongoDB Aggregation Pipeline]
+    Agg -->|Filter & Sort posts by timestamp < Cursor| DB[(MongoDB Database)]
+    DB -->|Map mutual-likes metadata| API
+    API -->|Return JSON Array + next_cursor| Client
+```
 
 ---
 
-## 🧬 System Architecture
-The internal layout structures are separated logically:
+## 🧬 Core Services & Layouts
+
+1.  **Feed Generator (`src/controllers/feed.js`)**: Employs cursor-based pagination utilizing timestamp indexes to guarantee fluid scrolling.
+2.  **Social Graph Model (`src/models/friendship.js`)**: Tracks user connections, mutual follows, and blocks.
+3.  **Real-Time Message Handler (`src/sockets/`)**: Manages chat rooms and online statuses for active friends.
+
+---
+
+## 🛠️ Technology Stack & Assets
+
+*   **Runtime Backend**: Node.js & Express.js server router.
+*   **Database Engine**: MongoDB for fast document structures and aggregation pipelines.
+*   **Pagination Engine**: Cursor-based pagination logic (offset-free scrolling).
+
+---
+
+## 📂 Repository Module Layout
+
 ```text
 social-media-api/
-├── css/ or styles/      # Styling engines and layouts
-├── js/ or src/          # Source scripts and business logic
-├── index.html or app.js # Operational entry point
+├── src/
+│   ├── controllers/     # Business logic (Feed, Auth, Comments)
+│   ├── models/          # MongoDB schemas (User, Post, Friendship)
+│   ├── routes/          # API route bindings
+│   └── app.js           # Express initializer
+├── package.json         # Node metadata
 └── README.md            # System documentation
 ```
 
 ---
 
-## 🛠️ Technology Stack
-
-| Technology | Purpose |
-| :--- | :--- |
-| Node.js | Server-side JavaScript runtime |
-| Express | RESTful API server framework |
-
----
-
-## 🚀 Local Developer Setup & Run
-
-### 📋 Prerequisites
-* Modern web browser / Node.js runtime (depending on project stack)
-
-### ⚙️ Quick Start Steps
+## ⚡ Local Setup & Run
 ```bash
-    git clone https://github.com/Sayed-Herzallah/social-media-api.git
-    cd social-media-api
-    npm install
-    npm run dev
+git clone https://github.com/Sayed-Herzallah/social-media-api.git
+cd social-media-api
+npm install
+# Set MONGO_URI in environment variables
+npm start
 ```
-
----
-
-## 🔮 Future Improvements
-* [ ] Integrate automated unit testing.
-* [ ] Add dynamic dark/light theme switcher.
-* [ ] Improve responsiveness on extra-small mobile screen viewports.
-
----
-
-## 👥 Contributors
-* **Sayed Herzallah** - Lead Developer & Systems Architect
 
 ---
 
